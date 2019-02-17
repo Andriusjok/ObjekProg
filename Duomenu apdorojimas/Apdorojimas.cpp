@@ -15,30 +15,38 @@ struct node {
 	string pavarde = "";
 	int *A = nullptr; //namu darbai
 	int e = 0; //egzamino rezultatas
-	node *next = nullptr;
-	double suma = 0;
+	node *next = nullptr; //pointeris i kita node
+	double suma = 0; //nd pazymiu suma
 	double galutinis = 0;
-	int dydis = 1;
+	int dydis = 1; // A masyvo dydis
 	double mediana = 0;
+	int n = 0; //nd pazymiu skaicius
 	void prideti(int k)
 	{
-		if (!A)
-		{
-			A = new int[1];
-			*A = k;
+		cout << "n: " << n << endl;
+		if (A) {
+			if (n >= dydis)
+			{
+				dydis = dydis * 2;
+				int *B = new int[dydis];
+				for (int i = 0; i < n; i++)
+				{
+					*(B + i) = *(A + i);
+				}
+				delete[] A;
+				A = B;
+				A[n] = k;
+			}
+			else {
+				A[n] = k;
+			}
 		}
 		else
 		{
-			dydis = sizeof(A) / sizeof(A[0]) + 1;
-			int *B = new int[dydis];
-			for (int i = 0; i < dydis - 1; i++)
-			{
-				*(B + i) = *(A + i);
-			}
-			delete[] A;
-			A = B;
-			A[dydis - 1] = k;
+			A = new int[1];
+			A[0] = k;
 		}
+				n++;
 	}
 };
 
@@ -149,7 +157,6 @@ node* insert(node *&root) {
 				cout << "Ivedete ne skaiciu, bandykite dar karta" << endl;
 				cin >> n;
 			}
-			new_node->dydis = n;
 			//Stephan T. Lavavej siulomas random library solution
 			std::random_device rd;
 			std::mt19937 mt(rd());
@@ -174,7 +181,7 @@ node* insert(node *&root) {
 		}
 		if (c == 1) {
 			if (n != 0) {
-				new_node->suma = getSum(new_node->dydis, new_node->A);
+				new_node->suma = getSum(new_node->n, new_node->A);
 				new_node->galutinis = 0.4 * new_node->suma / n + 0.6 * new_node->e;
 			}
 			else new_node->galutinis = 0.6 * new_node->e;
@@ -182,9 +189,9 @@ node* insert(node *&root) {
 		{
 			if (n != 0) {
 				int temp;
-				for (int i = 0; i < new_node->dydis; i++)
+				for (int i = 0; i < new_node->n; i++)
 				{
-					for (int j = i + 1; j < new_node->dydis; j++)
+					for (int j = i + 1; j < new_node->n; j++)
 
 					{
 						if (new_node->A[i] > new_node->A[j])
@@ -195,10 +202,10 @@ node* insert(node *&root) {
 						}
 					}
 				}
-				if (new_node->dydis % 2 != 0)
-					new_node->mediana = new_node->A[new_node->dydis - 1];
+				if (new_node->n % 2 != 0)
+					new_node->mediana = new_node->A[new_node->n - 1];
 				else
-					new_node->mediana = (new_node->A[new_node->dydis / 2] + new_node->A[new_node->dydis / 2 - 1]) / 2;
+					new_node->mediana = (new_node->A[new_node->n / 2] + new_node->A[new_node->n / 2 - 1]) / 2;
 				new_node->galutinis = 0.4 * new_node->mediana + 0.6 * new_node->e;
 			}
 			else new_node->galutinis = 0.6 * new_node->e;
@@ -295,7 +302,6 @@ node* insert(node *&root) {
 				cin.clear();
 				cin.ignore(100, '\n');
 			}
-			root->dydis = n;
 			//Stephan T. Lavavej siulomas random library solution
 			std::random_device rd;
 			std::mt19937 mt(rd());
@@ -323,7 +329,7 @@ node* insert(node *&root) {
 		if (c == 1) {
 			if (n != 0)
 			{
-				root->suma = getSum(root->dydis, root->A);
+				root->suma = getSum(root->n, root->A);
 				root->galutinis = 0.4 * root->suma / n + 0.6 * root->e;
 			}
 			else root->galutinis = 0.6 * root->e;
@@ -333,9 +339,9 @@ node* insert(node *&root) {
 		{
 			if (n != 0) {
 				int temp;
-				for (int i = 0; i < root->dydis; i++)
+				for (int i = 0; i < root->n; i++)
 				{
-					for (int j = i + 1; j < root->dydis; j++)
+					for (int j = i + 1; j < root->n; j++)
 
 					{
 						if (root->A[i] > root->A[j])
@@ -346,10 +352,10 @@ node* insert(node *&root) {
 						}
 					}
 				}
-				if (root->dydis % 2 != 0)
-					root->mediana = root->A[(root->dydis - 1)];
+				if (root->n % 2 != 0)
+					root->mediana = root->A[(root->n - 1)];
 				else
-					root->mediana = (root->A[root->dydis / 2] + root->A[root->dydis / 2 - 1]) / 2;
+					root->mediana = (root->A[root->n / 2] + root->A[root->n / 2 - 1]) / 2;
 			}
 			root->galutinis = 0.4 * root->mediana + 0.6 * root->e;
 
