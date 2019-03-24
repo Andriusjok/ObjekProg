@@ -60,9 +60,20 @@ bool compare_by_name(const studentas& lhs, const studentas& rhs) {
 bool compare_by_grades(studentas& lhs, studentas& rhs) {
 	return lhs.galutinis < rhs.galutinis;
 }
+bool compare_by_galutinis(studentas& lhs) {
+	if(lhs.galutinis >= 5)
+	return true;
+	return false;
+}
+bool compare_by_grade(studentas& lhs) {
+	if(lhs.galutinis < 5)
+	return true;
+	return false;
+}
+
 void FindLongest(vector<studentas> &input, unsigned int &Vilgis, unsigned int &Pilgis)
 {
-	for (auto i = 0; i < input.size(); i++)
+	for (size_t i = 0; i < input.size(); i++)
 	{
 		if (Vilgis < input[i].vardas.length())
 			Vilgis = input[i].vardas.length();
@@ -99,33 +110,17 @@ void FileRead(vector<studentas> &studentai, ifstream &file)
 }
 void vectorSplit(vector <studentas> &studentai, int &b, unsigned int &Vilgis, unsigned int &Pilgis)
 {
-	for (auto i = 0; i < studentai.size(); i++)
+	for (size_t i = 0; i < studentai.size(); i++)
 	{
 		studentai[i].GetAverage();
 		studentai[i].getMedian();
 	}
 	vector<studentas> vargsiukas;
-	if (b == 1) {
-		for (auto i = 0; i < studentai.size(); i++)
-		{
-			if (studentai[i].galutinis < 5)
-			{
-				vargsiukas.push_back(studentai[i]);
-				studentai.erase(studentai.begin() + i);
-			}
-		}
 
-	}
-	else {
-		for (auto i = 0; i < studentai.size(); i++)
-		{
-			if (studentai[i].galutmed < 5)
-			{
-				vargsiukas.push_back(studentai[i]);
-				studentai.erase(studentai.begin() + i);
-			}
-		}
-	}
+	vector<studentas>::iterator it = std::partition(studentai.begin(),studentai.end(),compare_by_galutinis);
+	std::copy(it,studentai.end(),std::back_inserter(vargsiukas));
+	studentai.erase(it,studentai.end());
+	studentai.shrink_to_fit();
 	std::sort(studentai.begin(), studentai.end(), compare_by_word);
 	std::sort(vargsiukas.begin(), vargsiukas.end(), compare_by_word);
 
@@ -136,7 +131,7 @@ void vectorSplit(vector <studentas> &studentai, int &b, unsigned int &Vilgis, un
 	failas << setw(16) << std::left << setfill(' ') << "Galutinis med. " << endl;
 	string eilute(Pilgis + Vilgis + 40, '-');
 	failas << eilute << endl;
-	for (auto i = 0; i < vargsiukas.size(); i++) {
+	for (size_t i = 0; i < vargsiukas.size(); i++) {
 		failas << setw(Pilgis + 6) << std::left << setfill(' ') << vargsiukas[i].pavarde;
 		failas << setw(Vilgis + 6) << std::left << setfill(' ') << vargsiukas[i].vardas;
 		failas << setw(16) << std::left << setfill(' ') << std::setprecision(2) << std::fixed << vargsiukas[i].galutinis << vargsiukas[i].galutmed << endl;
@@ -148,7 +143,7 @@ void vectorSplit(vector <studentas> &studentai, int &b, unsigned int &Vilgis, un
 	failas1 << setw(16) << std::left << setfill(' ') << "Galutinis med. " << endl;
 	string eilute1(Pilgis + Vilgis + 40, '-');
 	failas1 << eilute1 << endl;
-	for (auto i = 0; i < studentai.size(); i++)
+	for (size_t i = 0; i < studentai.size(); i++)
 	{
 		failas1 << setw(Pilgis + 6) << std::left << setfill(' ') << studentai[i].pavarde;
 		failas1 << setw(Vilgis + 6) << std::left << setfill(' ') << studentai[i].vardas;

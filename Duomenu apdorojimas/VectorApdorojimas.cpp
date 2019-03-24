@@ -10,7 +10,15 @@ void FileRead(vector<studentas> &studentai, ifstream &file);
 void SpartosAnalize(vector<studentas> &studentai);
 void VectorSplit(vector<studentas> &studentai, int &b, unsigned int &Vilgis, unsigned int &Pilgis);
 int main()
-{
+{	try {
 	vector<studentas> studentai;
 		SpartosAnalize(studentai);
+	}
+	catch (const std::exception &exc)
+		{
+
+			std::cerr << "ERROR:" << exc.what();
+			std::exit(EXIT_FAILURE);
+		}
+		return 0;
 }
